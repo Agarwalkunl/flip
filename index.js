@@ -1,9 +1,10 @@
-const express = require("express");
+const express = require("./node_modules/express");
 
-const cors = require("cors");
-const Razorpay = require("razorpay");
+const cors = require("./node_modules/cors");
+const Razorpay = require("./node_modules/razorpay");
 const app = express();
 app.use(express.json());
+const PORT = process.env.PORT || 1000;
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -110,4 +111,4 @@ app.post("/webhook", (req, res) => {
   }
 });
 
-app.listen(1000, console.log("server start 1000"));
+app.listen(PORT, console.log("server start 1000"));

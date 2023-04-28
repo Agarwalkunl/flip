@@ -67,53 +67,26 @@ app.post("/refund/:paymentId", async (req, res) => {
   }
 });
 app.post("/webhook", (req, res) => {
-  try {
-    const body = JSON.stringify(req.body);
-    const signature = req.get("X-Razorpay-Signature");
+  const payload = JSON.stringify(req.body);
+  const signature = req.get("X-Razorpay-Signature");
 
-    // Verify the signature sent by Razorpay
-    const expectedSignature = crypto
-      .createHmac("sha256", "zvAwFoWhcO9biTJJcpD8jaYq")
-      .update(body)
-      .digest("hex");
+  const expectedSignature = crypto
+    .createHmac("sha256", "12345678")
+    .update(payload)
+    .digest("hex");
 
-    if (signature !== expectedSignature) {
-      throw new Error("Invalid signature");
-    }
-
-    // Handle the webhook event
-    const event = req.body.event;
-    const payload = req.body.payload;
-
-    switch (event) {
-      case "payment.captured":
-        // Handle payment captured event
-        console.log("Payment captured:", payload);
-        break;
-      case "payment.failed":
-        // Handle payment failed event
-        console.log("Payment failed:", payload);
-        break;
-      case "refund.initiated":
-        // Handle refund initiated event
-        console.log("Refund initiated:", payload);
-        break;
-      case "refund.completed":
-        // Handle refund completed event
-        console.log("Refund completed:", payload);
-        break;
-      default:
-        // Handle unknown event
-        console.log("Unknown event:", event);
-        break;
-    }
-
-    // Send a response to Razorpay
-    res.sendStatus(200);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
+  if (signature !== expectedSignature) {
+    return res.status(400).send("Invalid webhook signature");
   }
+
+  // If the signature is valid, continue processing the webhook
+  // ...
+
+  res.status(200).send("Webhook received successfully");
+});
+
+app.listen(3000, () => {
+  console.log("Server started on port 3000");
 });
 
 app.listen(PORT, console.log("server start 1000"));

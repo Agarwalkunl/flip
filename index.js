@@ -70,9 +70,9 @@ app.post("/webhook", (req, res) => {
   try {
     const body = JSON.stringify(req.body);
     const signature = req.get("X-Razorpay-Signature");
-
+    console.log(req.body);
     const expectedSignature = crypto
-      .createHmac("sha256", "zvAwFoWhcO9biTJJcpD8jaYq")
+      .createHmac("sha256", "12345678")
       .update(body)
       .digest("hex");
 

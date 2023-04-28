@@ -70,9 +70,10 @@ app.post("/webhook", (req, res) => {
   try {
     const body = JSON.stringify(req.body);
     const signature = req.get("X-Razorpay-Signature");
-    console.log(req.body);
+
+    // Verify the signature sent by Razorpay
     const expectedSignature = crypto
-      .createHmac("sha256", "12345678")
+      .createHmac("sha256", "zvAwFoWhcO9biTJJcpD8jaYq")
       .update(body)
       .digest("hex");
 
@@ -80,30 +81,34 @@ app.post("/webhook", (req, res) => {
       throw new Error("Invalid signature");
     }
 
-    // Handle the webhook event here
+    // Handle the webhook event
     const event = req.body.event;
+    const payload = req.body.payload;
+
     switch (event) {
-      case "payment.authorized":
-        res.sendStatus(200);
-        break;
       case "payment.captured":
-        res.sendStatus(200);
+        // Handle payment captured event
+        console.log("Payment captured:", payload);
         break;
       case "payment.failed":
-        res.sendStatus(200);
-
+        // Handle payment failed event
+        console.log("Payment failed:", payload);
         break;
-      case "refund.created":
-        res.sendStatus(200);
+      case "refund.initiated":
+        // Handle refund initiated event
+        console.log("Refund initiated:", payload);
         break;
-      case "refund.processed":
-        res.sendStatus(200);
+      case "refund.completed":
+        // Handle refund completed event
+        console.log("Refund completed:", payload);
         break;
       default:
         // Handle unknown event
+        console.log("Unknown event:", event);
         break;
     }
 
+    // Send a response to Razorpay
     res.sendStatus(200);
   } catch (error) {
     console.error(error);
